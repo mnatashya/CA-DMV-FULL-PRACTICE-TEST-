@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>California DMV Practice Test</title>
+<style>
+  body { font-family: Arial, sans-serif; background-color: #f9f9f9; color: #222; padding: 20px; max-width: 600px; margin: auto; }
+  h1 { text-align: center; }
+  .question { margin-bottom: 20px; padding: 10px; background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+  .options label { display: block; margin: 6px 0; }
+  button { background-color: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; }
+  button:hover { background-color: #0056b3; }
+  .result { font-size: 18px; font-weight: bold; margin-top: 20px; text-align: center; }
+  .explanation { color: #444; font-style: italic; margin-top: 6px; display: none; }
+  .correct { color: green; }
+  .incorrect { color: red; }
+</style>
+</head>
+<body>
+<h1>California DMV Practice Test</h1>
+<form id="quizForm"></form>
+<div class="result" id="result"></div>
+
+<script>
+const quizData = [
+  {q:"When is it legal to drive off the paved road to pass another vehicle?", options:["If the vehicle ahead is turning left.","If there are two or more one‑way lanes.","It is not legal under any conditions.","If the shoulder is wide enough to accommodate your vehicle."], answer:2, explanation:"It is never legal to drive off the paved road to pass another vehicle."},
+  {q:"At a railroad crossing with no warning lights or gates, when you cannot see 400 feet down the tracks and are within 100 feet of the crossing, what is the speed limit?", options:["15 mph","25 mph","10 mph","35 mph"], answer:0, explanation:"The speed limit is 15 mph within 100 feet of a railroad crossing when you cannot see 400 feet down the track."},
+  {q:"Which is the proper way to parallel park?", options:["Drive forward into the space without stopping.","Stop next to the vehicle behind the open space, then drive forward.","Stop next to the vehicle in front of the open space, then back into the space.","Reverse in and then adjust by pulling forward."], answer:2, explanation:"You should stop next to the car in front of the open space, then back into the space."},
+  {q:"When entering a highway, you should:", options:["Accelerate to match the speed of traffic.","Drive slower than traffic until you merge.","Go at the posted speed limit regardless of traffic.","Pause at the end of the ramp before merging."], answer:0, explanation:"Safely accelerate to match the speed of traffic before merging."},
+  {q:"What should you do when driving in fog?", options:["Use high beams.","Use low beams.","Turn on fog lights only.","Turn off all extra lights to avoid glare."], answer:1, explanation:"Use low beams in fog—high beams cause glare."},
+  {q:"What color curb indicates no stopping or parking allowed?", options:["White","Yellow","Red","Green"], answer:2, explanation:"A red curb means no stopping, standing, or parking allowed."},
+  {q:"Two sets of double yellow lines spaced 2 feet or more apart indicate:", options:["Lanes of traffic moving in the same direction.","A barrier.","Carpool / High‑Occupancy Vehicle (HOV) lane.","No passing zone for all traffic."], answer:1, explanation:"They indicate a barrier that must not be crossed."},
+  {q:"When making a right turn at an intersection, what is correct regarding bicycle lanes?", options:["Merge into the bike lane before turning.","Wait until the bike lane ends, then make the turn.","Make the turn from your current lane; do not enter the bike lane.","Turn into the bike lane if no bicyclists are present."], answer:0, explanation:"You must merge into the bike lane before making a right turn."},
+  {q:"A flashing yellow traffic signal at an upcoming intersection means:", options:["Stop before entering the intersection.","Yield to all cross traffic before crossing.","Slow down and proceed with caution.","Speed up to clear the intersection quickly."], answer:2, explanation:"Flashing yellow means slow down and proceed with caution."},
+  {q:"You see a pedestrian crossing your lane ahead (no crosswalk). You should:", options:["Slow down and pass.","Make eye contact then pass.","Stop and let them finish crossing.","Honk to alert them."], answer:2, explanation:"You must yield to pedestrians even when they cross outside crosswalks."},
+  {q:"Which of the following is dangerous and also illegal while driving?", options:["Adjusting outside mirrors while driving.","Listening to music through headphones covering both ears.","Transporting an unrestrained pet inside the vehicle.","All of the above."], answer:1, explanation:"It is illegal to wear headphones covering both ears while driving."},
+  {q:"How far behind a large truck should you drive when following it?", options:["Very closely, so you can see traffic ahead.","Farther behind than you would behind a passenger vehicle.","Just one car length, no matter the weather.","As close as possible while still safe."], answer:1, explanation:"Large trucks block your view; give them more space."},
+  {q:"When must you stop before crossing railroad tracks?", options:["Always, regardless of conditions.","If you can't completely cross the tracks.","Only if there is a warning light.","Only if there is another vehicle approaching."], answer:1, explanation:"Never enter unless you can completely cross the tracks without stopping."},
+  {q:"When driving slowly in traffic, is it ever a violation?", options:["No, driving slowly is always safer.","Yes, if you block traffic by going significantly under the speed limit.","Only if weather conditions are good.","Only on highways with multiple lanes."], answer:1, explanation:"Driving too slowly can block traffic and be a violation."},
+  {q:"If you see a signal person directing traffic at a construction site ahead, you should:", options:["Obey their instructions only if you also see orange cones.","Obey unless the instructions conflict with signs.","Obey at all times.","Disregard if no workers are visible."], answer:2, explanation:"You must obey all directions from a signal person at construction zones."},
+  {q:"What does a solid yellow line next to a broken yellow line mean?", options:["Vehicles next to the broken line may pass.","Vehicles next to the solid line may pass.","Both directions may pass.","No passing allowed in either direction."], answer:0, explanation:"Vehicles next to the broken line may pass if safe; those next to solid may not."},
+  {q:"What does “occupant protection” refer to in traffic safety?", options:["Ensuring seat belts are used.","Keeping children in appropriate car seats.","Airbags functioning properly.","All of the above."], answer:3, explanation:"Occupant protection includes seat belts, airbags, and proper restraints for children."},
+  {q:"What should you do when approaching a school bus that is stopping to unload children with flashing red lights?", options:["Slow down and pass carefully.","Stop as long as it’s safe to do so.","Stop if you are behind the bus.","Slow down, but you may pass if the road has two lanes in each direction."], answer:2, explanation:"You must stop if you are behind the bus with red lights flashing."},
+  {q:"Under California law, at what blood alcohol concentration (BAC) are you considered driving under the influence if you are 21 or older?", options:["0.08%","0.05%","0.10%","0.01%"], answer:0, explanation:"You are legally intoxicated at 0.08% BAC or higher."},
+  {q:"When a traffic signal turns green, you may proceed through the intersection only if:", options:["The intersection is clear.","No vehicles are approaching from any direction.","The pedestrian signal shows “Walk.”","You have enough space on the other side to clear the intersection."], answer:3, explanation:"Proceed only if you can completely clear the intersection without blocking it."},
+  {q:"If you change your address, within how many days must you notify the DMV?", options:["10 days","5 days","30 days","Immediately"], answer:0, explanation:"You must notify the DMV within 10 days of changing your address."},
+  {q:"What is the speed limit in an alley in California unless posted otherwise?", options:["35 mph","15 mph","25 mph","20 mph"], answer:1, explanation:"The speed limit in alleys is 15 mph unless posted otherwise."},
+  {q:"Before turning left from a two‑way street onto a one‑way street, you should:", options:["Begin the turn from the left lane and finish in the right lane.","Begin the turn from the center lane.","Begin the turn from the left lane and finish in the left lane.","Begin the turn anywhere and straighten out afterwards."], answer:2, explanation:"Turn from the left lane into the left lane of the one-way street."},
+  {q:"Which of the following is required for operable headlights?", options:["Using high beams in fog.","Having at least one working headlight head.","Dim them for oncoming traffic within 500 feet, or within 300 feet behind another vehicle.","Using only parking lights during dusk."], answer:2, explanation:"You must dim high beams within 500 feet of oncoming traffic or 300 feet when following."},
+  {q:"What must you do if you are involved in a collision that causes an injury in California?", options:["Report it only if more than $1,000 in damage.","Call local law enforcement immediately.","Notify DMV by filing an SR‑1 form within 10 days.","Leave the scene if a minor injury."], answer:2, explanation:"You must report the collision to DMV using form SR‑1 within 10 days if anyone is injured."}
+];
+
+const form = document.getElementById("quizForm");
+quizData.forEach((item, i) => {
+  const div = document.createElement("div");
+  div.classList.add("question");
+  div.innerHTML = `<p><strong>${i + 1}. ${item.q}</strong></p>`;
+  const opts = document.createElement("div");
+  opts.classList.add("options");
+  item.options.forEach((opt, j) => {
+    const id = `q${i}_opt${j}`;
+    opts.innerHTML += `<label><input type='radio' name='q${i}' value='${j}' id='${id}'> ${opt}</label>`;
+  });
+  div.appendChild(opts);
+  div.innerHTML += `<p class='explanation' id='explain${i}'></p>`;
+  form.appendChild(div);
+});
+
+const submitBtn = document.createElement("button");
+submitBtn.type = "button";
+submitBtn.textContent = "Submit Quiz";
+form.appendChild(submitBtn);
+
+submitBtn.addEventListener("click", () => {
+  let score = 0;
+  quizData.forEach((item, i) => {
+    const selected = document.querySelector(`input[name='q${i}']:checked`);
+    const explanation = document.getElementById(`explain${i}`);
+    if (selected) {
+      if (parseInt(selected.value) === item.answer) {
+        score++;
+        explanation.className = 'explanation correct';
+        explanation.textContent = "✅ Correct! " + item.explanation;
+      } else {
+        explanation.className = 'explanation incorrect';
+        explanation.textContent = "❌ Incorrect. " + item.explanation;
+      }
+      explanation.style.display = 'block';
+    }
+  });
+  document.getElementById("result").textContent = `You scored ${score} / ${quizData.length}`;
+});
+</script>
+</body>
+</html>
